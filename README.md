@@ -24,7 +24,3 @@ npm run build
 ## 文档入口
 
 项目规划、学习路线、结构说明和后续记录统一放在 [docs/README.md](./docs/README.md)。
-
-## GitHub 重新绑定
-
-重新绑定远程仓库的方案见 [docs/github-rebind-plan.md](./docs/github-rebind-plan.md)。

@@ -9,6 +9,7 @@ import type { HalftoneSettings } from '../types/halftone';
 import type { LoadedImage } from '../types/image';
 import type { PrintEffectSettings } from '../types/printEffects';
 import type { WorkflowMode } from '../types/workflow';
+import { downloadCanvasAsPNG } from '../core/export/downloadCanvas';
 import { renderPipeline } from '../core/pipeline/renderPipeline';
 
 export function App() {
@@ -96,10 +97,7 @@ export function App() {
       return;
     }
 
-    const link = document.createElement('a');
-    link.download = 'halftone-preview.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    downloadCanvasAsPNG(canvas, 'halftone-preview.png');
   }, []);
 
   return (

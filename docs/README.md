@@ -8,7 +8,6 @@
 - [项目结构](./project-structure.md)：记录推荐目录结构、模块职责和后续拆分方向。
 - [版本路线](./version-roadmap.md)：记录 v0.1 到 v1.0 的阶段目标和完成标准。
 - [学习记录](./learning-record.md)：记录阶段性学习笔记和待回收进架构设计的内容。
-- [GitHub 重新绑定方案](./github-rebind-plan.md)：记录本地项目重新绑定远程仓库的可选方案。
 
 ## 后续需要补充
 
