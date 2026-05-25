@@ -24,3 +24,5 @@ npm run build
 ## 文档入口
 
 项目规划、学习路线、结构说明和后续记录统一放在 [docs/README.md](./docs/README.md)。
+
+提交格式与分支命名要求见 [docs/commit-guidelines.md](./docs/commit-guidelines.md)。

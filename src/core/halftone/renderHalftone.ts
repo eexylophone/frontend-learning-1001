@@ -12,33 +12,18 @@ export function renderHalftone(
   const minSize = Math.max(0, halftone.minDotSize);
   const maxSize = Math.max(minSize, halftone.maxDotSize + printEffects.inkSpread * 0.08);
   const angle = (halftone.angle * Math.PI) / 180;
-  const diagonal = Math.ceil(Math.sqrt(width * width + height * height));
-  const offsetX = (diagonal - width) / 2;
-  const offsetY = (diagonal - height) / 2;
 
   context.save();
-  context.translate(width / 2, height / 2);
-  context.rotate(angle);
-  context.translate(-diagonal / 2, -diagonal / 2);
   context.fillStyle = printEffects.foregroundColor;
   context.strokeStyle = printEffects.foregroundColor;
   context.lineCap = 'round';
 
-  for (let y = 0; y < diagonal; y += cellSize) {
-    for (let x = 0; x < diagonal; x += cellSize) {
-      const sample = rotatePoint(
-        x + cellSize / 2 - offsetX,
-        y + cellSize / 2 - offsetY,
-        width / 2,
-        height / 2,
-        -angle,
-      );
+  for (let y = 0; y < height; y += cellSize) {
+    for (let x = 0; x < width; x += cellSize) {
+      const sampleX = Math.min(width - 1, Math.floor(x + cellSize / 2));
+      const sampleY = Math.min(height - 1, Math.floor(y + cellSize / 2));
 
-      if (sample.x < 0 || sample.x >= width || sample.y < 0 || sample.y >= height) {
-        continue;
-      }
-
-      const luminance = getLuminance(data, width, Math.floor(sample.x), Math.floor(sample.y));
+      const luminance = getLuminance(data, width, sampleX, sampleY);
       const darkness = 1 - luminance / 255;
       const size = minSize + (maxSize - minSize) * darkness;
 
@@ -46,7 +31,7 @@ export function renderHalftone(
         continue;
       }
 
-      drawHalftoneShape(context, halftone.shape, x + cellSize / 2, y + cellSize / 2, size, cellSize);
+      drawHalftoneShape(context, halftone.shape, sampleX, sampleY, size, cellSize, angle);
     }
   }
 
@@ -60,18 +45,27 @@ function drawHalftoneShape(
   y: number,
   size: number,
   cellSize: number,
+  angle: number,
 ): void {
   if (shape === 'square') {
-    context.fillRect(x - size / 2, y - size / 2, size, size);
+    context.save();
+    context.translate(x, y);
+    context.rotate(angle);
+    context.fillRect(-size / 2, -size / 2, size, size);
+    context.restore();
     return;
   }
 
   if (shape === 'line') {
+    context.save();
+    context.translate(x, y);
+    context.rotate(angle);
     context.lineWidth = Math.max(1, size);
     context.beginPath();
-    context.moveTo(x - cellSize * 0.42, y);
-    context.lineTo(x + cellSize * 0.42, y);
+    context.moveTo(-cellSize * 0.42, 0);
+    context.lineTo(cellSize * 0.42, 0);
     context.stroke();
+    context.restore();
     return;
   }
 
@@ -83,16 +77,4 @@ function drawHalftoneShape(
 function getLuminance(data: Uint8ClampedArray, width: number, x: number, y: number): number {
   const index = (y * width + x) * 4;
   return 0.299 * data[index] + 0.587 * data[index + 1] + 0.114 * data[index + 2];
-}
-
-function rotatePoint(x: number, y: number, cx: number, cy: number, angle: number) {
-  const dx = x - cx;
-  const dy = y - cy;
-  const cos = Math.cos(angle);
-  const sin = Math.sin(angle);
-
-  return {
-    x: cx + dx * cos - dy * sin,
-    y: cy + dx * sin + dy * cos,
-  };
 }

@@ -15,9 +15,11 @@ import { renderPipeline } from '../core/pipeline/renderPipeline';
 export function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [editorState, setEditorState] = useState<EditorState>(defaultEditorState);
+  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (!editorState.image || !canvasRef.current) {
+      setThumbnailUrl(null);
       return;
     }
 
@@ -28,6 +30,8 @@ export function App() {
       halftone: editorState.halftone,
       printEffects: editorState.printEffects,
     });
+
+    setThumbnailUrl(canvasRef.current.toDataURL('image/png'));
   }, [editorState]);
 
   const setWorkflowMode = useCallback((workflowMode: WorkflowMode) => {
@@ -116,7 +120,7 @@ export function App() {
           onExport={exportPNG}
         />
       }
-      preview={<PreviewCanvas canvasRef={canvasRef} image={editorState.image} />}
+      preview={<PreviewCanvas canvasRef={canvasRef} image={editorState.image} thumbnailUrl={thumbnailUrl} />}
     />
   );
 }

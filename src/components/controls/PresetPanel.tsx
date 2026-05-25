@@ -14,12 +14,13 @@ export function PresetPanel({ presets, selectedPresetId, onApply }: PresetPanelP
         {presets.map((preset) => (
           <button
             className={selectedPresetId === preset.id ? 'preset-item is-active' : 'preset-item'}
+            aria-label={`${preset.name}：${preset.description}`}
             key={preset.id}
             type="button"
             onClick={() => onApply(preset.id)}
           >
-            <span>{preset.name}</span>
-            <small>{preset.description}</small>
+            <span className="preset-name">{preset.name}</span>
+            <span className="preset-description">{preset.description}</span>
           </button>
         ))}
       </div>
